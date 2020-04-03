@@ -16,9 +16,12 @@ FREETYPEINC = /usr/include/freetype2
 # OpenBSD (uncomment)
 #FREETYPEINC = ${X11INC}/freetype2
 
+# Uncomment this for the alpha patch / ALPHA_PATCH
+#XRENDER = -lXrender
+
 # includes and libs
 INCS = -I. -I/usr/include -I$(X11INC) -I${FREETYPEINC}
-LIBS = -L/usr/lib -lc -L${X11LIB} -lX11 ${FREETYPELIBS}
+LIBS = -L/usr/lib -lc -L${X11LIB} -lX11 ${FREETYPELIBS} ${XRENDER}
 
 # flags
 CPPFLAGS = -DVERSION=\"${VERSION}\" -D_DEFAULT_SOURCE

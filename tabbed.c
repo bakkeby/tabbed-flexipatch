@@ -17,6 +17,7 @@
 #include <X11/XKBlib.h>
 #include <X11/Xft/Xft.h>
 
+#include "patches.h"
 #include "arg.h"
 
 /* XEMBED messages */
@@ -58,7 +59,11 @@ typedef union {
 
 typedef struct {
 	unsigned int mod;
+	#if KEYCODE_PATCH
+	KeyCode keycode;
+	#else
 	KeySym keysym;
+	#endif // KEYCODE_PATCH
 	void (*func)(const Arg *);
 	const Arg arg;
 } Key;
@@ -136,6 +141,8 @@ static void updatetitle(int c);
 static int xerror(Display *dpy, XErrorEvent *ee);
 static void xsettitle(Window w, const char *str);
 
+#include "patch/include.h"
+
 /* variables */
 static int screen;
 static void (*handler[LASTEvent]) (const XEvent *) = {
@@ -149,10 +156,16 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
 	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
+	#if KEYRELEASE_PATCH
+	[KeyRelease] = keyrelease,
+	#endif // KEYRELEASE_PATCH
 	[MapRequest] = maprequest,
 	[PropertyNotify] = propertynotify,
 };
 static int bh, wx, wy, ww, wh;
+#if AUTOHIDE_PATCH || HIDETABS_PATCH
+static int vbh;
+#endif // AUTOHIDE_PATCH | HIDETABS_PATCH
 static unsigned int numlockmask;
 static Bool running = True, nextfocus, doinitspawn = True,
             fillagain = False, closelastclient = False,
@@ -169,11 +182,21 @@ static char winid[64];
 static char **cmd;
 static char *wmname = "tabbed";
 static const char *geometry;
+#if HIDETABS_PATCH
+static Bool barvisibility = False;
+#endif // HIDETABS_PATCH
+
+#if ALPHA_PATCH
+static Colormap cmap;
+static Visual *visual = NULL;
+#endif // ALPHA_PATCH
 
 char *argv0;
 
 /* configuration, allows nested code to access above variables */
 #include "config.h"
+
+#include "patch/include.c"
 
 void
 buttonpress(const XEvent *e)
@@ -254,8 +277,13 @@ configurenotify(const XEvent *e)
 		ww = ev->width;
 		wh = ev->height;
 		XFreePixmap(dpy, dc.drawable);
+		#if ALPHA_PATCH
+		dc.drawable = XCreatePixmap(dpy, win, ww, wh,
+		              32);
+		#else
 		dc.drawable = XCreatePixmap(dpy, root, ww, wh,
 		              DefaultDepth(dpy, screen));
+		#endif // ALPHA_PATCH
 		if (sel > -1)
 			resize(sel, ww, wh - bh);
 		XSync(dpy, False);
@@ -316,18 +344,48 @@ drawbar(void)
 {
 	XftColor *col;
 	int c, cc, fc, width;
+	#if AUTOHIDE_PATCH || HIDETABS_PATCH
+	int nbh;
+	#endif // AUTOHIDE_PATCH | HIDETABS_PATCH
 	char *name = NULL;
+	#if CLIENTNUMBER_PATCH
+	char tabtitle[312];
+	#endif // CLIENTNUMBER_PATCH
+
+	#if AUTOHIDE_PATCH || HIDETABS_PATCH
+	#if AUTOHIDE_PATCH && HIDETABS_PATCH
+	nbh = barvisibility && nclients > 1 ? vbh : 0;
+	#elif HIDETABS_PATCH
+	nbh = barvisibility ? vbh : 0;
+	#elif AUTOHIDE_PATCH
+	nbh = nclients > 1 ? vbh : 0;
+	#endif
+	if (nbh != bh) {
+		bh = nbh;
+		for (c = 0; c < nclients; c++)
+			XMoveResizeWindow(dpy, clients[c]->win, 0, bh, ww, wh - bh);
+	}
+	#endif // AUTOHIDE_PATCH | HIDETABS_PATCH
 
 	if (nclients == 0) {
 		dc.x = 0;
 		dc.w = ww;
 		XFetchName(dpy, win, &name);
 		drawtext(name ? name : "", dc.norm);
+		#if AUTOHIDE_PATCH
+		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, vbh, 0, 0);
+		#else
 		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, bh, 0, 0);
+		#endif // AUTOHIDE_PATCH
 		XSync(dpy, False);
 
 		return;
 	}
+
+	#if AUTOHIDE_PATCH || HIDETABS_PATCH
+	if (bh == 0)
+		return;
+	#endif // AUTOHIDE_PATCH | HIDETABS_PATCH
 
 	width = ww;
 	cc = ww / tabwidth;
@@ -358,7 +416,13 @@ drawbar(void)
 		} else {
 			col = clients[c]->urgent ? dc.urg : dc.norm;
 		}
+		#if CLIENTNUMBER_PATCH
+		snprintf(tabtitle, sizeof(tabtitle), "%d: %s",
+		         c + 1, clients[c]->name);
+		drawtext(tabtitle, col);
+		#else
 		drawtext(clients[c]->name, col);
+		#endif // CLIENTNUMBER_PATCH
 		dc.x += dc.w;
 		clients[c]->tabx = dc.x;
 	}
@@ -398,7 +462,11 @@ drawtext(const char *text, XftColor col[ColLast])
 			;
 	}
 
+	#if ALPHA_PATCH
+	d = XftDrawCreate(dpy, dc.drawable, visual, cmap);
+	#else
 	d = XftDrawCreate(dpy, dc.drawable, DefaultVisual(dpy, screen), DefaultColormap(dpy, screen));
+	#endif // ALPHA_PATCH
 	XftDrawStringUtf8(d, &col[ColFG], dc.font.xfont, x, y, (XftChar8 *) buf, len);
 	XftDrawDestroy(d);
 }
@@ -566,7 +634,11 @@ getcolor(const char *colstr)
 {
 	XftColor color;
 
+	#if ALPHA_PATCH
+	if (!XftColorAllocName(dpy, visual, cmap, colstr, &color))
+	#else
 	if (!XftColorAllocName(dpy, DefaultVisual(dpy, screen), DefaultColormap(dpy, screen), colstr, &color))
+		#endif // ALPHA_PATCH
 		die("%s: cannot allocate color '%s'\n", argv0, colstr);
 
 	return color;
@@ -653,11 +725,17 @@ keypress(const XEvent *e)
 {
 	const XKeyEvent *ev = &e->xkey;
 	unsigned int i;
+	#if !KEYCODE_PATCH
 	KeySym keysym;
 
 	keysym = XkbKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0, 0);
+	#endif // KEYCODE_PATCH
 	for (i = 0; i < LENGTH(keys); i++) {
+		#if KEYCODE_PATCH
+		if (ev->keycode == keys[i].keycode &&
+		#else
 		if (keysym == keys[i].keysym &&
+		#endif // KEYCODE_PATCH
 		    CLEANMASK(keys[i].mod) == CLEANMASK(ev->state) &&
 		    keys[i].func)
 			keys[i].func(&(keys[i].arg));
@@ -694,7 +772,9 @@ manage(Window w)
 		int i, j, nextpos;
 		unsigned int modifiers[] = { 0, LockMask, numlockmask,
 		                             numlockmask | LockMask };
+		#if !KEYCODE_PATCH
 		KeyCode code;
+		#endif // KEYCODE_PATCH
 		Client *c;
 		XEvent e;
 
@@ -705,6 +785,13 @@ manage(Window w)
 		XSync(dpy, False);
 
 		for (i = 0; i < LENGTH(keys); i++) {
+			#if KEYCODE_PATCH
+			for (j = 0; j < LENGTH(modifiers); ++j) {
+				XGrabKey(dpy, keys[i].keycode,
+				         keys[i].mod | modifiers[j], w,
+				         True, GrabModeAsync, GrabModeAsync);
+ 			}
+			#else
 			if ((code = XKeysymToKeycode(dpy, keys[i].keysym))) {
 				for (j = 0; j < LENGTH(modifiers); j++) {
 					XGrabKey(dpy, code, keys[i].mod |
@@ -712,7 +799,20 @@ manage(Window w)
 					         GrabModeAsync, GrabModeAsync);
 				}
 			}
+			#endif // KEYCODE_PATCH
 		}
+
+		#if KEYRELEASE_PATCH
+		for (i = 0; i < LENGTH(keyreleases); i++) {
+			if ((code = XKeysymToKeycode(dpy, keyreleases[i].keysym))) {
+				for (j = 0; j < LENGTH(modifiers); j++) {
+					XGrabKey(dpy, code, keyreleases[i].mod |
+					         modifiers[j], w, True,
+					         GrabModeAsync, GrabModeAsync);
+				}
+			}
+		}
+		#endif // KEYRELEASE_PATCH
 
 		c = ecalloc(1, sizeof *c);
 		c->win = w;
@@ -975,7 +1075,11 @@ setup(void)
 	screen = DefaultScreen(dpy);
 	root = RootWindow(dpy, screen);
 	initfont(font);
+	#if AUTOHIDE_PATCH || HIDETABS_PATCH
+	vbh = dc.h = dc.font.height + 2;
+	#else
 	bh = dc.h = dc.font.height + 2;
+	#endif // AUTOHIDE_PATCH | HIDETABS_PATCH
 
 	/* init atoms */
 	wmatom[WMDelete] = XInternAtom(dpy, "WM_DELETE_WINDOW", False);
@@ -1021,21 +1125,74 @@ setup(void)
 			wy = dh + wy - wh - 1;
 	}
 
+	#if ALPHA_PATCH
+	XVisualInfo *vis;
+	XRenderPictFormat *fmt;
+	int nvi;
+	int i;
+
+	XVisualInfo tpl = {
+		.screen = screen,
+		.depth = 32,
+		.class = TrueColor
+	};
+
+	vis = XGetVisualInfo(dpy, VisualScreenMask | VisualDepthMask | VisualClassMask, &tpl, &nvi);
+	for(i = 0; i < nvi; i ++) {
+		fmt = XRenderFindVisualFormat(dpy, vis[i].visual);
+		if (fmt->type == PictTypeDirect && fmt->direct.alphaMask) {
+			visual = vis[i].visual;
+			break;
+		}
+	}
+
+	XFree(vis);
+
+	if (! visual) {
+		fprintf(stderr, "Couldn't find ARGB visual.\n");
+		exit(1);
+	}
+
+	cmap = XCreateColormap( dpy, root, visual, None);
+	#endif // ALPHA_PATCH
+
 	dc.norm[ColBG] = getcolor(normbgcolor);
 	dc.norm[ColFG] = getcolor(normfgcolor);
 	dc.sel[ColBG] = getcolor(selbgcolor);
 	dc.sel[ColFG] = getcolor(selfgcolor);
 	dc.urg[ColBG] = getcolor(urgbgcolor);
 	dc.urg[ColFG] = getcolor(urgfgcolor);
+	#if ALPHA_PATCH
+	XSetWindowAttributes attrs;
+	attrs.background_pixel = dc.norm[ColBG].pixel;
+	attrs.border_pixel = dc.norm[ColFG].pixel;
+	attrs.bit_gravity = NorthWestGravity;
+	attrs.event_mask = FocusChangeMask | KeyPressMask
+		| ExposureMask | VisibilityChangeMask | StructureNotifyMask
+		| ButtonMotionMask | ButtonPressMask | ButtonReleaseMask;
+	attrs.background_pixmap = None;
+	attrs.colormap = cmap;
+
+	win = XCreateWindow(dpy, root, wx, wy, ww, wh, 0, 32, InputOutput,
+		visual, CWBackPixmap | CWBorderPixel | CWBitGravity
+		| CWEventMask | CWColormap, &attrs);
+
+	dc.drawable = XCreatePixmap(dpy, win, ww, wh, 32);
+	dc.gc = XCreateGC(dpy, dc.drawable, 0, 0);
+	#else
 	dc.drawable = XCreatePixmap(dpy, root, ww, wh,
 	                            DefaultDepth(dpy, screen));
 	dc.gc = XCreateGC(dpy, root, 0, 0);
 
 	win = XCreateSimpleWindow(dpy, root, wx, wy, ww, wh, 0,
 	                          dc.norm[ColFG].pixel, dc.norm[ColBG].pixel);
+	#endif // ALPHA_PATCH
 	XMapRaised(dpy, win);
 	XSelectInput(dpy, win, SubstructureNotifyMask | FocusChangeMask |
 	             ButtonPressMask | ExposureMask | KeyPressMask |
+	             #if KEYRELEASE_PATCH
+	             KeyReleaseMask |
+	             #endif // KEYRELEASE_PATCH
 	             PropertyChangeMask | StructureNotifyMask |
 	             SubstructureRedirectMask);
 	xerrorxlib = XSetErrorHandler(xerror);
