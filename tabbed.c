@@ -49,8 +49,19 @@
 #define TEXTW(x)                (textnw(x, strlen(x)) + dc.font.height)
 
 enum { ColFG, ColBG, ColLast };       /* color */
-enum { WMProtocols, WMDelete, WMName, WMState, WMFullscreen,
-       XEmbed, WMSelectTab, WMLast }; /* default atoms */
+enum {
+	WMProtocols,
+	WMDelete,
+	WMName,
+	WMState,
+	WMFullscreen,
+	XEmbed,
+	WMSelectTab,
+	#if ICON_PATCH
+	WMIcon,
+	#endif // ICON_PATCH
+	WMLast
+}; /* default atoms */
 
 typedef union {
 	int i;
@@ -514,6 +525,10 @@ focus(int c)
 			n += snprintf(&buf[n], sizeof(buf) - n, " %s", cmd[i]);
 
 		xsettitle(win, buf);
+		#if ICON_PATCH
+		XChangeProperty(dpy, win, wmatom[WMIcon], XA_CARDINAL, 32,
+				PropModeReplace, (unsigned char *) icon, ICON_WIDTH * ICON_HEIGHT + 2);
+		#endif // ICON_PATCH
 		XRaiseWindow(dpy, win);
 
 		return;
@@ -533,6 +548,9 @@ focus(int c)
 		lastsel = sel;
 		sel = c;
 	}
+	#if ICON_PATCH
+	xseticon();
+	#endif // ICON_PATCH
 
 	if (clients[c]->urgent && (wmh = XGetWMHints(dpy, clients[c]->win))) {
 		wmh->flags &= ~XUrgencyHint;
@@ -731,11 +749,12 @@ keypress(const XEvent *e)
 	keysym = XkbKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0, 0);
 	#endif // KEYCODE_PATCH
 	for (i = 0; i < LENGTH(keys); i++) {
-		#if KEYCODE_PATCH
-		if (ev->keycode == keys[i].keycode &&
-		#else
-		if (keysym == keys[i].keysym &&
-		#endif // KEYCODE_PATCH
+		if (
+			#if KEYCODE_PATCH
+			ev->keycode == keys[i].keycode &&
+			#else
+			keysym == keys[i].keysym &&
+			#endif // KEYCODE_PATCH
 		    CLEANMASK(keys[i].mod) == CLEANMASK(ev->state) &&
 		    keys[i].func)
 			keys[i].func(&(keys[i].arg));
@@ -959,9 +978,17 @@ propertynotify(const XEvent *e)
 			}
 		}
 		XFree(wmh);
+		#if ICON_PATCH
+		if (c == sel)
+			xseticon();
+		#endif // ICON_PATCH
 	} else if (ev->state != PropertyDelete && ev->atom == XA_WM_NAME &&
 	           (c = getclient(ev->window)) > -1) {
 		updatetitle(c);
+	#if ICON_PATCH
+	} else if (ev->atom == wmatom[WMIcon] && (c = getclient(ev->window)) > -1 && c == sel) {
+		xseticon();
+	#endif // ICON_PATCH
 	}
 }
 
@@ -1090,6 +1117,9 @@ setup(void)
 	wmatom[WMSelectTab] = XInternAtom(dpy, "_TABBED_SELECT_TAB", False);
 	wmatom[WMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
 	wmatom[XEmbed] = XInternAtom(dpy, "_XEMBED", False);
+	#if ICON_PATCH
+	wmatom[WMIcon] = XInternAtom(dpy, "_NET_WM_ICON", False);
+	#endif // ICON_PATCH
 
 	/* init appearance */
 	wx = 0;
@@ -1220,6 +1250,19 @@ setup(void)
 
 	snprintf(winid, sizeof(winid), "%lu", win);
 	setenv("XEMBED", winid, 1);
+
+	#if ICON_PATCH
+	/* change icon from RGBA to ARGB */
+	icon[0] = ICON_WIDTH;
+	icon[1] =  ICON_HEIGHT;
+	for (int i = 0; i < ICON_WIDTH * ICON_HEIGHT; ++i) {
+		icon[i + 2] =
+			ICON_PIXEL_DATA[i * 4 + 3] << 24 |
+			ICON_PIXEL_DATA[i * 4 + 0] <<  0 |
+			ICON_PIXEL_DATA[i * 4 + 1] <<  8 |
+			ICON_PIXEL_DATA[i * 4 + 2] << 16 ;
+	}
+	#endif // ICON_PATCH
 
 	nextfocus = foreground;
 	focus(-1);

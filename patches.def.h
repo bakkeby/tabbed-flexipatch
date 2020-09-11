@@ -34,6 +34,16 @@
  */
 #define HIDETABS_PATCH 0
 
+/* This patch gives tabbed an icon. This icon is the currently selected tab's icon.
+ * If the selected tab has no icon (or no tab is selected), use a (admittedly ugly) default icon.
+ *
+ * This patch supports both the new EWMH (_NET_WM_ICON) and
+ * legacy ICCCM (WM_ICON) ways of setting a window's icon.
+ *
+ * https://tools.suckless.org/tabbed/patches/icon/
+ */
+#define ICON_PATCH 0
+
 /* With this patch, handling key input is done with keycodes instead of keysyms making
  * the keyboard layout independent.
  * https://tools.suckless.org/tabbed/patches/keycode/

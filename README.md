@@ -15,6 +15,8 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
+2020-09-11 - Added icon patch
+
 2020-04-03 - Added alpha, autohide, clientnumber, hidetabs, keycode and keyrelease patches
 
 ### Patches included:
@@ -30,6 +32,11 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [hidetabs](https://tools.suckless.org/tabbed/patches/hidetabs/)
       - this patch hides all the tabs and only shows them when Mod+Shift is pressed
+
+   - [icon](https://tools.suckless.org/tabbed/patches/icon/)
+      - this patch gives tabbed an icon
+      - the icon is the currently selected tab's icon
+      - if the selected tab has no icon (or no tab is selected), use a default icon
 
    - [keycode](https://tools.suckless.org/tabbed/patches/keycode/)
       - with this patch, handling key input is done with keycodes instead of keysyms making the keyboard layout independent
