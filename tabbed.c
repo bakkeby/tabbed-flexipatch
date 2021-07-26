@@ -216,7 +216,11 @@ buttonpress(const XEvent *e)
 	int i, fc;
 	Arg arg;
 
+	#if BOTTOM_TABS_PATCH
+	if (ev->y < wh - bh)
+	#else
 	if (ev->y < 0 || ev->y > bh)
+	#endif // BOTTOM_TABS_PATCH
 		return;
 
 	if (((fc = getfirsttab()) > 0 && ev->x < TEXTW(before)) || ev->x < 0)
