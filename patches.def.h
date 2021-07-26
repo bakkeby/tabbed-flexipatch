@@ -21,6 +21,12 @@
  */
 #define AUTOHIDE_PATCH 0
 
+/* This patch centers the tab text.
+ * https://www.reddit.com/r/suckless/comments/oi4zjl/tabbed_text_alignment/
+ * https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-center-0.6-20200512-dabf6a2.diff
+ */
+#define CENTER_PATCH 0
+
 /* This patch prints the position number of the client before the window title.
  * https://tools.suckless.org/tabbed/patches/clientnumber/
  */

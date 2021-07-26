@@ -15,6 +15,8 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
+2021-07-26 - Added the center patch
+
 2020-09-11 - Added icon patch
 
 2020-04-03 - Added alpha, autohide, clientnumber, hidetabs, keycode and keyrelease patches
@@ -26,6 +28,9 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [autohide](https://tools.suckless.org/tabbed/patches/autohide/)
       - hides the tab bar if only one tab is open
+
+   - [center](https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-center-0.6-20200512-dabf6a2.diff)
+      - centers window titles in tabs
 
    - [clientnumber](https://tools.suckless.org/tabbed/patches/clientnumber/)
       - prints the position number of the client before the window title

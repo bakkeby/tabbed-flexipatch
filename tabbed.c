@@ -468,10 +468,12 @@ drawtext(const char *text, XftColor col[ColLast])
 
 	memcpy(buf, text, len);
 	if (len < olen) {
-		for (i = len, j = strlen(titletrim); j && i;
-		     buf[--i] = titletrim[--j])
-			;
+		for (i = len, j = strlen(titletrim); j && i; buf[--i] = titletrim[--j]);
 	}
+	#if CENTER_PATCH
+	else
+		x += (dc.w - TEXTW(buf)) / 2; // center text
+	#endif // CENTER_PATCH
 
 	#if ALPHA_PATCH
 	d = XftDrawCreate(dpy, dc.drawable, visual, cmap);
