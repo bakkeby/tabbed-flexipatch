@@ -1,4 +1,4 @@
-Similar to [dwm-flexipatch](https://github.com/bakkeby/dwm-flexipatch) this tabbed 0.6 (a329a3, 2018-03-10) project has a different take on patching. It uses preprocessor directives to decide whether or not to include a patch during build time. Essentially this means that this build, for better or worse, contains both the patched _and_ the original code. The aim being that you can select which patches to include and the build will contain that code and nothing more.
+Similar to [dwm-flexipatch](https://github.com/bakkeby/dwm-flexipatch) this tabbed 0.6 (dabf6a2, 2020-05-12) project has a different take on patching. It uses preprocessor directives to decide whether or not to include a patch during build time. Essentially this means that this build, for better or worse, contains both the patched _and_ the original code. The aim being that you can select which patches to include and the build will contain that code and nothing more.
 
 For example to include the `alpha` patch then you would only need to flip this setting from 0 to 1 in [patches.h](https://github.com/bakkeby/tabbed-flexipatch/blob/master/patches.def.h):
 ```c
@@ -15,7 +15,7 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
-2021-07-26 - Added the center patch
+2021-07-26 - Added the center patch and the bottom tabs patch
 
 2020-09-11 - Added icon patch
 
@@ -28,6 +28,9 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [autohide](https://tools.suckless.org/tabbed/patches/autohide/)
       - hides the tab bar if only one tab is open
+
+   - [bottomtabs](https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-bottomtabs-0.6-20200512-dabf6a2.diff)
+      - moves the tabs / bar to the bottom of the tabbed window
 
    - [center](https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-center-0.6-20200512-dabf6a2.diff)
       - centers window titles in tabs

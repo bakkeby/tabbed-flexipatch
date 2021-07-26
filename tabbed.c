@@ -173,7 +173,7 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
 	[MapRequest] = maprequest,
 	[PropertyNotify] = propertynotify,
 };
-static int bh, wx, wy, ww, wh;
+static int bh, obh, wx, wy, ww, wh;
 #if AUTOHIDE_PATCH || HIDETABS_PATCH
 static int vbh;
 #endif // AUTOHIDE_PATCH | HIDETABS_PATCH
@@ -295,6 +295,15 @@ configurenotify(const XEvent *e)
 		dc.drawable = XCreatePixmap(dpy, root, ww, wh,
 		              DefaultDepth(dpy, screen));
 		#endif // ALPHA_PATCH
+
+		if (!obh && (wh <= bh)) {
+			obh = bh;
+			bh = 0;
+		} else if (!bh && (wh > obh)) {
+			bh = obh;
+			obh = 0;
+		}
+
 		if (sel > -1)
 			resize(sel, ww, wh - bh);
 		XSync(dpy, False);
@@ -362,6 +371,11 @@ drawbar(void)
 	#if CLIENTNUMBER_PATCH
 	char tabtitle[312];
 	#endif // CLIENTNUMBER_PATCH
+	#if BOTTOM_TABS_PATCH
+	int by = wh - bh;
+	#else
+	int by = 0;
+	#endif // BOTTOM_TABS_PATCH
 
 	#if AUTOHIDE_PATCH || HIDETABS_PATCH
 	#if AUTOHIDE_PATCH && HIDETABS_PATCH
@@ -384,9 +398,9 @@ drawbar(void)
 		XFetchName(dpy, win, &name);
 		drawtext(name ? name : "", dc.norm);
 		#if AUTOHIDE_PATCH
-		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, vbh, 0, 0);
+		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, vbh, 0, by);
 		#else
-		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, bh, 0, 0);
+		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, bh, 0, by);
 		#endif // AUTOHIDE_PATCH
 		XSync(dpy, False);
 
@@ -437,7 +451,7 @@ drawbar(void)
 		dc.x += dc.w;
 		clients[c]->tabx = dc.x;
 	}
-	XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, bh, 0, 0);
+	XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, bh, 0, by);
 	XSync(dpy, False);
 }
 
@@ -1001,7 +1015,11 @@ resize(int c, int w, int h)
 	XWindowChanges wc;
 
 	ce.x = 0;
-	ce.y = bh;
+	#if BOTTOM_TABS_PATCH
+	ce.y = wc.y = 0;
+	#else
+	ce.y = wc.y = bh;
+	#endif // BOTTOM_TABS_PATCH
 	ce.width = wc.width = w;
 	ce.height = wc.height = h;
 	ce.type = ConfigureNotify;
@@ -1012,7 +1030,7 @@ resize(int c, int w, int h)
 	ce.override_redirect = False;
 	ce.border_width = 0;
 
-	XConfigureWindow(dpy, clients[c]->win, CWWidth | CWHeight, &wc);
+	XConfigureWindow(dpy, clients[c]->win, CWY | CWWidth | CWHeight, &wc);
 	XSendEvent(dpy, clients[c]->win, False, StructureNotifyMask,
 	           (XEvent *)&ce);
 }
@@ -1235,9 +1253,10 @@ setup(void)
 
 	size_hint = XAllocSizeHints();
 	if (!isfixed) {
-		size_hint->flags = PSize;
+		size_hint->flags = PSize | PMinSize;
 		size_hint->height = wh;
 		size_hint->width = ww;
+		size_hint->min_height = bh + 1;
 	} else {
 		size_hint->flags = PMaxSize | PMinSize;
 		size_hint->min_width = size_hint->max_width = ww;

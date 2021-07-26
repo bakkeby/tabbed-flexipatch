@@ -21,6 +21,11 @@
  */
 #define AUTOHIDE_PATCH 0
 
+/* This patch moves the tabs / bar to the bottom of the tabbed window.
+ * https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-bottomtabs-0.6-20200512-dabf6a2.diff
+ */
+#define BOTTOM_TABS_PATCH 0
+
 /* This patch centers the tab text.
  * https://www.reddit.com/r/suckless/comments/oi4zjl/tabbed_text_alignment/
  * https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-center-0.6-20200512-dabf6a2.diff
