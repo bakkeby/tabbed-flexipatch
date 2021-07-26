@@ -391,8 +391,15 @@ drawbar(void)
 	#endif
 	if (nbh != bh) {
 		bh = nbh;
+		#if BOTTOM_TABS_PATCH
+		by = wh - bh;
+		#endif // BOTTOM_TABS_PATCH
 		for (c = 0; c < nclients; c++)
+			#if BOTTOM_TABS_PATCH
+			XMoveResizeWindow(dpy, clients[c]->win, 0, 0, ww, wh - bh);
+			#else
 			XMoveResizeWindow(dpy, clients[c]->win, 0, bh, ww, wh - bh);
+			#endif // BOTTOM_TABS_PATCH
 	}
 	#endif // AUTOHIDE_PATCH | HIDETABS_PATCH
 
