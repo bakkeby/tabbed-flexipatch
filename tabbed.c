@@ -1581,6 +1581,9 @@ main(int argc, char *argv[])
 	if (!(dpy = XOpenDisplay(NULL)))
 		die("%s: cannot open display\n", argv0);
 
+	#if XRESOURCES_PATCH
+	config_init();
+	#endif // XRESOURCES_PATCH
 	setup();
 	printf("0x%lx\n", win);
 	fflush(NULL);

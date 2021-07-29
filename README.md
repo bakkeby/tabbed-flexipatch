@@ -15,7 +15,7 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
-2021-07-29 - Added the bar-height patch
+2021-07-29 - Added the bar-height and xresources patches
 
 2021-07-26 - Added the center patch and the bottom tabs patch
 
@@ -56,3 +56,6 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [keyrelease](https://tools.suckless.org/tabbed/patches/keyrelease/)
       - this patch enables for function handling on KeyRelease events
+
+   - [xresources](https://tools.suckless.org/tabbed/patches/xresources/)
+      - allows tabbed colors to be defined via Xresources

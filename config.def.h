@@ -1,13 +1,13 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const char font[]        = "monospace:size=9";
-static const char* normbgcolor  = "#222222";
-static const char* normfgcolor  = "#cccccc";
-static const char* selbgcolor   = "#555555";
-static const char* selfgcolor   = "#ffffff";
-static const char* urgbgcolor   = "#111111";
-static const char* urgfgcolor   = "#cc0000";
+static       char font[]        = "monospace:size=9";
+static       char* normbgcolor  = "#222222";
+static       char* normfgcolor  = "#cccccc";
+static       char* selbgcolor   = "#555555";
+static       char* selfgcolor   = "#ffffff";
+static       char* urgbgcolor   = "#111111";
+static       char* urgfgcolor   = "#cc0000";
 static const char before[]      = "<";
 static const char after[]       = ">";
 static const char titletrim[]   = "...";
@@ -36,6 +36,21 @@ static Bool npisrelative  = False;
                 p, winid, NULL \
         } \
 }
+
+#if XRESOURCES_PATCH
+/*
+ * Xresources preferences to load at startup
+ */
+ResourcePref resources[] = {
+	{ "font",         STRING,  &font },
+	{ "color0",       STRING,  &normbgcolor },
+	{ "color4",       STRING,  &normfgcolor },
+	{ "color4",       STRING,  &selbgcolor },
+	{ "color7",       STRING,  &selfgcolor },
+	{ "color2",       STRING,  &urgbgcolor },
+	{ "color3",       STRING,  &urgfgcolor },
+};
+#endif // XRESOURCES_PATCH
 
 #define MODKEY ControlMask
 #if KEYCODE_PATCH

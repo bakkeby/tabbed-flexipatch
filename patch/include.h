@@ -8,3 +8,6 @@
 #if KEYRELEASE_PATCH
 #include "keyrelease.h"
 #endif
+#if XRESOURCES_PATCH
+#include "xresources.h"
+#endif

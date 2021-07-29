@@ -71,3 +71,8 @@
  * https://tools.suckless.org/tabbed/patches/keyrelease/
  */
 #define KEYRELEASE_PATCH 0
+
+/* This patch allows tabbed colors to be defined via Xresources.
+ * https://tools.suckless.org/tabbed/patches/xresources/
+ */
+#define XRESOURCES_PATCH 0
