@@ -15,6 +15,10 @@ static const int  tabwidth      = 200;
 static const Bool foreground    = True;
 static       Bool urgentswitch  = False;
 
+#if BAR_HEIGHT_PATCH
+static const int barheight = 0;  /* 0 means derive by font (default), otherwise absolute height */
+#endif // BAR_HEIGHT_PATCH
+
 /*
  * Where to place a new tab when it is opened. When npisrelative is True,
  * then the current position is changed + newposition. If npisrelative

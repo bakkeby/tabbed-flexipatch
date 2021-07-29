@@ -15,6 +15,8 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
+2021-07-29 - Added the bar-height patch
+
 2021-07-26 - Added the center patch and the bottom tabs patch
 
 2020-09-11 - Added icon patch
@@ -28,6 +30,9 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [autohide](https://tools.suckless.org/tabbed/patches/autohide/)
       - hides the tab bar if only one tab is open
+
+   - [bar-height](https://tools.suckless.org/tabbed/patches/bar-height/)
+      - allows the height of the bar to be manually specified
 
    - [bottomtabs](https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-bottomtabs-0.6-20200512-dabf6a2.diff)
       - moves the tabs / bar to the bottom of the tabbed window

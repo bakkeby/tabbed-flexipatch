@@ -1133,10 +1133,15 @@ setup(void)
 	screen = DefaultScreen(dpy);
 	root = RootWindow(dpy, screen);
 	initfont(font);
-	#if AUTOHIDE_PATCH || HIDETABS_PATCH
-	vbh = dc.h = dc.font.height + 2;
+	#if BAR_HEIGHT_PATCH
+	dc.h = (barheight ? barheight : dc.font.height + 2);
 	#else
-	bh = dc.h = dc.font.height + 2;
+	dc.h = dc.font.height + 2;
+	#endif // BAR_HEIGHT_PATCH
+	#if AUTOHIDE_PATCH || HIDETABS_PATCH
+	vbh = dc.h;
+	#else
+	bh = dc.h;
 	#endif // AUTOHIDE_PATCH | HIDETABS_PATCH
 
 	/* init atoms */
