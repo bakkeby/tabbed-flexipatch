@@ -11,7 +11,11 @@ static       char* urgfgcolor   = "#cc0000";
 static const char before[]      = "<";
 static const char after[]       = ">";
 static const char titletrim[]   = "...";
+#if AWESOMEBAR_PATCH
+static       int  tabwidth      = 200;
+#else
 static const int  tabwidth      = 200;
+#endif // AWESOMEBAR_PATCH
 static const Bool foreground    = True;
 static       Bool urgentswitch  = False;
 

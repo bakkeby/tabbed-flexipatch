@@ -15,6 +15,8 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
+2022-03-14 - Added the awesomebar patch
+
 2021-07-29 - Added the bar-height and xresources patches
 
 2021-07-26 - Added the center patch and the bottom tabs patch
@@ -30,6 +32,9 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [autohide](https://tools.suckless.org/tabbed/patches/autohide/)
       - hides the tab bar if only one tab is open
+
+   - awesomebar
+      - evenly divides tab bar space between the tabbed windows
 
    - [bar-height](https://tools.suckless.org/tabbed/patches/bar-height/)
       - allows the height of the bar to be manually specified

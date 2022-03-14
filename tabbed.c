@@ -424,6 +424,10 @@ drawbar(void)
 	#endif // AUTOHIDE_PATCH | HIDETABS_PATCH
 
 	width = ww;
+
+	#if AWESOMEBAR_PATCH
+	tabwidth = ww / nclients;
+	#endif // AWESOMEBAR_PATCH
 	cc = ww / tabwidth;
 	if (nclients > cc)
 		cc = (ww - TEXTW(before) - TEXTW(after)) / tabwidth;

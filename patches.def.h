@@ -21,6 +21,11 @@
  */
 #define AUTOHIDE_PATCH 0
 
+/* Named after the window title bar patch for dwm this patch divides the
+ * tab bar space evenly between the tabbed windows.
+ */
+#define AWESOMEBAR_PATCH 0
+
 /* This patch allows the height of the bar to be manually specified.
  * https://tools.suckless.org/tabbed/patches/bar-height/
  */
