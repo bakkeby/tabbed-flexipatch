@@ -1,5 +1,5 @@
 # tabbed version
-VERSION = 0.6
+VERSION = 0.7
 
 # Customize below to fit your system
 
@@ -17,7 +17,7 @@ FREETYPEINC = /usr/include/freetype2
 #FREETYPEINC = ${X11INC}/freetype2
 
 # Uncomment this for the alpha patch / ALPHA_PATCH
-#XRENDER = -lXrender
+XRENDER = -lXrender
 
 # includes and libs
 INCS = -I. -I/usr/include -I$(X11INC) -I${FREETYPEINC}

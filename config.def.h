@@ -58,7 +58,7 @@ ResourcePref resources[] = {
 
 #define MODKEY ControlMask
 #if KEYCODE_PATCH
-static Key keys[] = {
+static const Key keys[] = {
 	/* modifier             key           function     argument */
 	{ MODKEY|ShiftMask,     36,           focusonce,   { 0 } },
 	{ MODKEY|ShiftMask,     36,           spawn,       { 0 } },
@@ -88,7 +88,7 @@ static Key keys[] = {
 	#endif // HIDETABS_PATCH
 };
 #else
-static Key keys[] = {
+static const Key keys[] = {
 	/* modifier             key           function     argument */
 	{ MODKEY|ShiftMask,     XK_Return,    focusonce,   { 0 } },
 	{ MODKEY|ShiftMask,     XK_Return,    spawn,       { 0 } },
@@ -125,7 +125,7 @@ static Key keys[] = {
 #endif // KEYCODE_PATCH
 
 #if KEYRELEASE_PATCH
-static Key keyreleases[] = {
+static const Key keyreleases[] = {
 	/* modifier             key             function     argument */
 	#if HIDETABS_PATCH
 	{ MODKEY|ShiftMask,     XK_Shift_L,     showbar,     { .i = 0 } },
