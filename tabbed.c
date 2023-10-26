@@ -476,10 +476,23 @@ drawtext(const char *text, XftColor col[ColLast])
 	int i, j, x, y, h, len, olen;
 	char buf[256];
 	XftDraw *d;
-	XRectangle r = { dc.x, dc.y, dc.w, dc.h };
+	#if SEPARATOR_PATCH
+	XRectangle tab = { dc.x+separator, dc.y, dc.w-separator, dc.h };
+	XRectangle sep = { dc.x, dc.y, separator, dc.h };
+
+	if (separator) {
+		XSetForeground(dpy, dc.gc, col[ColFG].pixel);
+		XFillRectangles(dpy, dc.drawable, dc.gc, &sep, 1);
+	}
 
 	XSetForeground(dpy, dc.gc, col[ColBG].pixel);
+	XFillRectangles(dpy, dc.drawable, dc.gc, &tab, 1);
+	#else
+	XRectangle r = { dc.x, dc.y, dc.w, dc.h };
+	XSetForeground(dpy, dc.gc, col[ColBG].pixel);
 	XFillRectangles(dpy, dc.drawable, dc.gc, &r, 1);
+	#endif // SEPARATOR_PATCH
+
 	if (!text)
 		return;
 

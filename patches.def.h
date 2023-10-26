@@ -77,6 +77,11 @@
  */
 #define KEYRELEASE_PATCH 0
 
+/* Add a decorative separator bar to the beginning of each tab.
+ * https://tools.suckless.org/tabbed/patches/separator/
+ */
+#define SEPARATOR_PATCH 0
+
 /* This patch allows tabbed colors to be defined via Xresources.
  * https://tools.suckless.org/tabbed/patches/xresources/
  */
