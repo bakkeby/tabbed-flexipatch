@@ -1,4 +1,7 @@
 /* Patches */
+#if DRAG_PATCH
+#include "drag.h"
+#endif
 #if HIDETABS_PATCH
 #include "hidebar.h"
 #endif

@@ -47,6 +47,11 @@
  */
 #define CLIENTNUMBER_PATCH 0
 
+/* Adds support for dragging tabs left and right using the mouse.
+ * https://tools.suckless.org/tabbed/patches/drag/
+ */
+#define DRAG_PATCH 0
+
 /* This patch hides all the tabs and only shows them when Mod+Shift is pressed. All functions
  * with switching, rotating, and creating tabs involve Mod+Shift. When not doing one of these
  * functions, visibility of the tabs is not needed.

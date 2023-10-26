@@ -172,6 +172,9 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
 	#endif // KEYRELEASE_PATCH
 	[MapRequest] = maprequest,
 	[PropertyNotify] = propertynotify,
+	#if DRAG_PATCH
+	[MotionNotify] = motionnotify,
+	#endif // DRAG_PATCH
 };
 static int bh, obh, wx, wy, ww, wh;
 #if AUTOHIDE_PATCH || HIDETABS_PATCH
@@ -1277,6 +1280,9 @@ setup(void)
 	             KeyReleaseMask |
 	             #endif // KEYRELEASE_PATCH
 	             PropertyChangeMask | StructureNotifyMask |
+	             #if DRAG_PATCH
+	             ButtonMotionMask |
+	             #endif // DRAG_PATCH
 	             SubstructureRedirectMask);
 	xerrorxlib = XSetErrorHandler(xerror);
 
