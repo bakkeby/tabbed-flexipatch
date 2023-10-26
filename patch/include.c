@@ -1,4 +1,7 @@
 /* Patches */
+#if BASENAME_PATCH
+#include "basename.c"
+#endif
 #if DRAG_PATCH
 #include "drag.c"
 #endif

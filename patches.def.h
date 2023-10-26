@@ -31,6 +31,11 @@
  */
 #define BAR_HEIGHT_PATCH 0
 
+/* Only show the basename of the tabbed title; useful with zathura. Toggle with -b.
+ * https://tools.suckless.org/tabbed/patches/basenames/
+ */
+#define BASENAME_PATCH 0
+
 /* This patch moves the tabs / bar to the bottom of the tabbed window.
  * https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-bottomtabs-0.6-20200512-dabf6a2.diff
  */

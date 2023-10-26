@@ -96,6 +96,9 @@ typedef struct {
 
 typedef struct {
 	char name[256];
+	#if BASENAME_PATCH
+	char *basename;
+	#endif // BASENAME_PATCH
 	Window win;
 	int tabx;
 	Bool urgent;
@@ -459,10 +462,16 @@ drawbar(void)
 		} else {
 			col = clients[c]->urgent ? dc.urg : dc.norm;
 		}
-		#if CLIENTNUMBER_PATCH
+		#if CLIENTNUMBER_PATCH && BASENAME_PATCH
+		snprintf(tabtitle, sizeof(tabtitle), "%d: %s",
+		         c + 1, basenametitles ? clients[c]->basename : clients[c]->name);
+		drawtext(tabtitle, col);
+		#elif CLIENTNUMBER_PATCH
 		snprintf(tabtitle, sizeof(tabtitle), "%d: %s",
 		         c + 1, clients[c]->name);
 		drawtext(tabtitle, col);
+		#elif BASENAME_PATCH
+		drawtext(basenametitles ? clients[c]->basename : clients[c]->name, col);
 		#else
 		drawtext(clients[c]->name, col);
 		#endif // CLIENTNUMBER_PATCH
@@ -1467,6 +1476,10 @@ updatetitle(int c)
 	    sizeof(clients[c]->name)))
 		gettextprop(clients[c]->win, XA_WM_NAME, clients[c]->name,
 		            sizeof(clients[c]->name));
+	#if BASENAME_PATCH
+	if (basenametitles)
+		clients[c]->basename = getbasename(clients[c]->name);
+	#endif // BASENAME_PATCH
 	if (sel == c)
 		xsettitle(win, clients[c]->name);
 	drawbar();
@@ -1518,9 +1531,13 @@ xsettitle(Window w, const char *str)
 void
 usage(void)
 {
-	die("usage: %s [-dfksv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
+	die("usage: %s [-"
+		#if BASENAME_PATCH
+		"b"
+		#endif // BASENAME_PATCH
+		"dfksv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
 	    "       [-r narg] [-o color] [-O color] [-t color] [-T color]\n"
-	    "       [-u color] [-U color] command...\n", argv0);
+	    "       [-u color] [-U color] command...\n", arg0);
 }
 
 int
@@ -1583,6 +1600,11 @@ main(int argc, char *argv[])
 	case 'u':
 		urgbgcolor = EARGF(usage());
 		break;
+	#if BASENAME_PATCH
+	case 'b':
+		basenametitles = True;
+		break;
+	#endif // BASENAME_PATCH
 	case 'v':
 		die("tabbed-"VERSION", © 2009-2016 tabbed engineers, "
 		    "see LICENSE for details.\n");

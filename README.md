@@ -15,6 +15,8 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
+2023-10-26 - Added the separator, drag, basenames and move-clamped patches
+
 2022-03-14 - Added the awesomebar patch
 
 2021-07-29 - Added the bar-height and xresources patches
@@ -39,6 +41,9 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
    - [bar-height](https://tools.suckless.org/tabbed/patches/bar-height/)
       - allows the height of the bar to be manually specified
 
+   - [basenames](https://tools.suckless.org/tabbed/patches/basenames/)
+      - show only the basename of the tabbed title
+
    - [bottomtabs](https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-bottomtabs-0.6-20200512-dabf6a2.diff)
       - moves the tabs / bar to the bottom of the tabbed window
 
@@ -47,6 +52,9 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [clientnumber](https://tools.suckless.org/tabbed/patches/clientnumber/)
       - prints the position number of the client before the window title
+
+   - [drag](https://tools.suckless.org/tabbed/patches/drag/)
+      - adds support for dragging tabs left and right using the mouse
 
    - [hidetabs](https://tools.suckless.org/tabbed/patches/hidetabs/)
       - this patch hides all the tabs and only shows them when Mod+Shift is pressed
@@ -61,6 +69,14 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [keyrelease](https://tools.suckless.org/tabbed/patches/keyrelease/)
       - this patch enables for function handling on KeyRelease events
+
+   - [move-clamped](https://tools.suckless.org/tabbed/patches/move-clamped/)
+      - makes tabbed interpret large position numbers as the largest known position
+      - allows for `Ctrl-9`, for example, to always select the rightmost tab, even if there are only
+        4 tabs
+
+   - [separator](https://tools.suckless.org/tabbed/patches/separator/)
+      - adds a decorator separator to the beginning of each tab
 
    - [xresources](https://tools.suckless.org/tabbed/patches/xresources/)
       - allows tabbed colors to be defined via Xresources
