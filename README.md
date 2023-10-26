@@ -15,7 +15,7 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
-2023-10-26 - Added the separator, drag, basenames and move-clamped patches
+2023-10-26 - Added the separator, drag, basenames, move-clamped and xresources reload patches
 
 2022-03-14 - Added the awesomebar patch
 
@@ -80,3 +80,7 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [xresources](https://tools.suckless.org/tabbed/patches/xresources/)
       - allows tabbed colors to be defined via Xresources
+
+   - [xresources-reload](https://tools.suckless.org/tabbed/patches/xresources-with-reload-signal/)
+      - xresources with signal reloading, allows resources to be reloaded during runtime using
+        the USR1 kill signal

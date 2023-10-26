@@ -4,6 +4,10 @@ config_init(void)
 	char *resm;
 	XrmDatabase db;
 	ResourcePref *p;
+	Display *dpy;
+
+	if(!(dpy = XOpenDisplay(NULL)))
+		die("Can't open display\n");
 
 	XrmInitialize();
 	resm = XResourceManagerString(dpy);
@@ -48,3 +52,28 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 	}
 	return 0;
 }
+
+#if XRESOURCES_RELOAD_PATCH
+static int colors_changed = 0;
+
+void
+xrdb_reload(int sig)
+{
+	config_init();
+	colors_changed = 1;
+	signal(SIGUSR1, xrdb_reload);
+}
+
+void
+writecolors(void)
+{
+	dc.norm[ColBG] = getcolor(normbgcolor);
+	dc.norm[ColFG] = getcolor(normfgcolor);
+	dc.sel[ColBG] = getcolor(selbgcolor);
+	dc.sel[ColFG] = getcolor(selfgcolor);
+	dc.urg[ColBG] = getcolor(urgbgcolor);
+	dc.urg[ColFG] = getcolor(urgfgcolor);
+
+	colors_changed = 0;
+}
+#endif // XRESOURCES_RELOAD_PATCH

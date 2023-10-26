@@ -387,6 +387,11 @@ drawbar(void)
 	int by = 0;
 	#endif // BOTTOM_TABS_PATCH
 
+	#if XRESOURCES_PATCH && XRESOURCES_RELOAD_PATCH
+	if (colors_changed)
+		writecolors();
+	#endif // XRESOURCES_RELOAD_PATCH
+
 	#if AUTOHIDE_PATCH || HIDETABS_PATCH
 	#if AUTOHIDE_PATCH && HIDETABS_PATCH
 	nbh = barvisibility && nclients > 1 ? vbh : 0;
@@ -1537,7 +1542,7 @@ usage(void)
 		#endif // BASENAME_PATCH
 		"dfksv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
 	    "       [-r narg] [-o color] [-O color] [-t color] [-T color]\n"
-	    "       [-u color] [-U color] command...\n", arg0);
+	    "       [-u color] [-U color] command...\n", argv0);
 }
 
 int
@@ -1628,6 +1633,9 @@ main(int argc, char *argv[])
 
 	#if XRESOURCES_PATCH
 	config_init();
+	#if XRESOURCES_RELOAD_PATCH
+	signal(SIGUSR1, xrdb_reload);
+	#endif // XRESOURCES_RELOAD_PATCH
 	#endif // XRESOURCES_PATCH
 	setup();
 	printf("0x%lx\n", win);

@@ -96,3 +96,13 @@
  * https://tools.suckless.org/tabbed/patches/xresources/
  */
 #define XRESOURCES_PATCH 0
+
+/* Expansion of the resources patch above, allows resources to be reloaded during
+ * runtime by using a USR1 kill signal.
+ *
+ * Example use:
+ *    pidof tabbed | xargs kill -s USR1
+ *
+ * https://tools.suckless.org/tabbed/patches/xresources-with-reload-signal/
+ */
+#define XRESOURCES_RELOAD_PATCH 0

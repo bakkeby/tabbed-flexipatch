@@ -1,38 +1,34 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static       char font[]        = "monospace:size=9";
-static       char* normbgcolor  = "#222222";
-static       char* normfgcolor  = "#cccccc";
-static       char* selbgcolor   = "#555555";
-static       char* selfgcolor   = "#ffffff";
-static       char* urgbgcolor   = "#111111";
-static       char* urgfgcolor   = "#cc0000";
-static const char before[]      = "<";
-static const char after[]       = ">";
-static const char titletrim[]   = "...";
-#if AWESOMEBAR_PATCH
-static       int  tabwidth      = 200;
-#else
-static const int  tabwidth      = 200;
-#endif // AWESOMEBAR_PATCH
-static const Bool foreground    = True;
-static       Bool urgentswitch  = False;
+static char *font         = "monospace:size=9";
+static char *normbgcolor  = "#222222";
+static char *normfgcolor  = "#cccccc";
+static char *selbgcolor   = "#555555";
+static char *selfgcolor   = "#ffffff";
+static char *urgbgcolor   = "#111111";
+static char *urgfgcolor   = "#cc0000";
+static char before[]      = "<";
+static char after[]       = ">";
+static char titletrim[]   = "...";
+static int  tabwidth      = 200;
+static int  foreground    = 1;
+static int  urgentswitch  = 0;
 #if SEPARATOR_PATCH
-static       int  separator     = 4;
+static int  separator     = 4;
 #endif // SEPARATOR_PATCH
 
 #if BAR_HEIGHT_PATCH
-static const int barheight = 0;  /* 0 means derive by font (default), otherwise absolute height */
+static int barheight = 0;  /* 0 means derive by font (default), otherwise absolute height */
 #endif // BAR_HEIGHT_PATCH
 
 /*
- * Where to place a new tab when it is opened. When npisrelative is True,
+ * Where to place a new tab when it is opened. When npisrelative is 1,
  * then the current position is changed + newposition. If npisrelative
- * is False, then newposition is an absolute position.
+ * is 0, then newposition is an absolute position.
  */
-static int  newposition   = 0;
-static Bool npisrelative  = False;
+static int newposition  = 0;
+static int npisrelative = 0;
 
 #define SETPROP(p) { \
         .v = (char *[]){ "/bin/sh", "-c", \
@@ -56,6 +52,20 @@ ResourcePref resources[] = {
 	{ "color7",       STRING,  &selfgcolor },
 	{ "color2",       STRING,  &urgbgcolor },
 	{ "color3",       STRING,  &urgfgcolor },
+	{ "before",       STRING,  &before },
+	{ "after",        STRING,  &after },
+	{ "titletrim",    STRING,  &titletrim },
+	{ "tabwidth",     INTEGER, &tabwidth },
+	{ "foreground",   INTEGER, &foreground },
+	{ "urgentswitch", INTEGER, &urgentswitch },
+	{ "newposition",  INTEGER, &newposition },
+	{ "npisrelative", INTEGER, &npisrelative },
+	#if SEPARATOR_PATCH
+	{ "separator",    INTEGER, &separator },
+	#endif // SEPARATOR_PATCH
+	#if BAR_HEIGHT_PATCH
+	{ "barheight",    INTEGER, &barheight },
+	#endif // BAR_HEIGHT_PATCH
 };
 #endif // XRESOURCES_PATCH
 
