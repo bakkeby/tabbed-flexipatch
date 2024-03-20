@@ -3,6 +3,9 @@
 NAME = tabbed
 VERSION = 0.8
 
+# Uncomment this for the alpha patch / ALPHA_PATCH
+#LDFLAGS = -lXrender
+
 # paths
 PREFIX = /usr/local
 MANPREFIX = ${PREFIX}/share/man

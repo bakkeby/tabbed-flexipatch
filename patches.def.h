@@ -10,7 +10,7 @@
 /* Patches */
 
 /* This patch allows tabbed to handle windows with transparency.
- * You need to uncomment the corresponding line in config.mk to use the -lXrender library
+ * You need to uncomment the corresponding line in Makefile to use the -lXrender library
  * when including this patch.
  * https://tools.suckless.org/tabbed/patches/alpha/
  */
