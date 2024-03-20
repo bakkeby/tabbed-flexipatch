@@ -35,6 +35,7 @@ config.h:
 
 patches.h:
 	cp patches.def.h $@
+
 .o:
 	${CC} -o $@ $< ${TABBED_LDFLAGS}
 
