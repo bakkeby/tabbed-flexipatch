@@ -106,3 +106,12 @@
  * https://tools.suckless.org/tabbed/patches/xresources-with-reload-signal/
  */
 #define XRESOURCES_RELOAD_PATCH 0
+
+/*
+ * Alongside the WM_NAME property, this patch ensures that the WM_CLASS
+ * X11 property is set based on the name provided via the -n flag.
+ *
+ * Without this patch, window rules for tabbed windows may behave
+ * unexpectedly in certain window managers, including DWM.
+ */
+#define CLASS_PATCH 0
