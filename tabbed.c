@@ -1532,7 +1532,7 @@ xsettitle(Window w, const char *str)
 	XTextProperty xtp;
 
 	if (XmbTextListToTextProperty(dpy, (char **)&str, 1,
-	    XCompoundTextStyle, &xtp) == Success) {
+	    XUTF8StringStyle, &xtp) == Success) {
 		XSetTextProperty(dpy, w, &xtp, wmatom[WMName]);
 		XSetTextProperty(dpy, w, &xtp, XA_WM_NAME);
 		XFree(xtp.value);
