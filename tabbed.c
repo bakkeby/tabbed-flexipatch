@@ -61,6 +61,9 @@ enum {
 	#if ICON_PATCH
 	WMIcon,
 	#endif // ICON_PATCH
+	#if CLASS_PATCH
+	WMClass,
+	#endif // CLASS_PATCH
 	WMLast
 }; /* default atoms */
 
@@ -198,6 +201,9 @@ static int cmd_append_pos;
 static char winid[64];
 static char **cmd;
 static char *wmname = "tabbed";
+#if CLASS_PATCH
+static char *wmclass= "tabbed";
+#endif // CLASS_PATCH
 static const char *geometry;
 #if HIDETABS_PATCH
 static Bool barvisibility = False;
@@ -1202,6 +1208,9 @@ setup(void)
 	wmatom[WMFullscreen] = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN",
 	                                   False);
 	wmatom[WMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
+	#if CLASS_PATCH
+	wmatom[WMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
+	#endif // CLASS_PATCH
 	wmatom[WMProtocols] = XInternAtom(dpy, "WM_PROTOCOLS", False);
 	wmatom[WMSelectTab] = XInternAtom(dpy, "_TABBED_SELECT_TAB", False);
 	wmatom[WMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
@@ -1320,7 +1329,11 @@ setup(void)
 	xerrorxlib = XSetErrorHandler(xerror);
 
 	class_hint.res_name = wmname;
+	#if CLASS_PATCH
+	class_hint.res_class = wmclass;
+	#else
 	class_hint.res_class = "tabbed";
+	#endif // CLASS_PATCH
 	XSetClassHint(dpy, win, &class_hint);
 
 	size_hint = XAllocSizeHints();
@@ -1589,6 +1602,9 @@ main(int argc, char *argv[])
 		break;
 	case 'n':
 		wmname = EARGF(usage());
+		#if CLASS_PATCH
+		wmclass = wmname;
+		#endif // CLASS_PATCH
 		break;
 	case 'O':
 		normfgcolor = EARGF(usage());

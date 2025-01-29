@@ -15,6 +15,8 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
 ### Changelog:
 
+2025-01-19 - Added the class patch.
+
 2023-10-26 - Added the separator, drag, basenames, move-clamped and xresources reload patches
 
 2022-03-14 - Added the awesomebar patch
@@ -49,6 +51,9 @@ Refer to [https://tools.suckless.org/tabbed/](https://tools.suckless.org/tabbed/
 
    - [center](https://github.com/bakkeby/patches/blob/master/tabbed/tabbed-center-0.6-20200512-dabf6a2.diff)
       - centers window titles in tabs
+
+   - class
+      -  Ensures that the `WM_CLASS` X11 property is set with the `-n` flag.
 
    - [clientnumber](https://tools.suckless.org/tabbed/patches/clientnumber/)
       - prints the position number of the client before the window title
