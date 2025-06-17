@@ -31,7 +31,7 @@ all: ${BIN}
 .c.o:
 	${CC} -o $@ -c $< ${TABBED_CFLAGS} ${TABBED_CPPFLAGS}
 
-${OBJ}: config.h
+${OBJ}: config.h patches.h
 
 config.h:
 	cp config.def.h $@
