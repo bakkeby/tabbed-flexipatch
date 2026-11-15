@@ -55,6 +55,7 @@ enum {
 	WMDelete,
 	WMName,
 	WMState,
+	WMPID,
 	WMFullscreen,
 	XEmbed,
 	WMSelectTab,
@@ -154,6 +155,7 @@ static void updatenumlockmask(void);
 static void updatetitle(int c);
 static int xerror(Display *dpy, XErrorEvent *ee);
 static void xsettitle(Window w, const char *str);
+static void xsetpid(void);
 
 #include "patch/include.h"
 
@@ -1202,6 +1204,7 @@ setup(void)
 	wmatom[WMFullscreen] = XInternAtom(dpy, "_NET_WM_STATE_FULLSCREEN",
 	                                   False);
 	wmatom[WMName] = XInternAtom(dpy, "_NET_WM_NAME", False);
+	wmatom[WMPid] = XInternAtom(dpy, "_NET_WM_PID", False);
 	wmatom[WMProtocols] = XInternAtom(dpy, "WM_PROTOCOLS", False);
 	wmatom[WMSelectTab] = XInternAtom(dpy, "_TABBED_SELECT_TAB", False);
 	wmatom[WMState] = XInternAtom(dpy, "_NET_WM_STATE", False);
@@ -1552,6 +1555,15 @@ xsettitle(Window w, const char *str)
 }
 
 void
+xsetpid(void)
+{
+	/* XChangeProperty expects 32 bit CARDINALS of type long */
+	long pid = getpid();
+	XChangeProperty(dpy, win, wmatom[WMPid], XA_CARDINAL, 32,
+	                PropModeReplace, (unsigned char *)&pid, 1);
+}
+
+void
 usage(void)
 {
 	die("usage: %s [-"
@@ -1669,6 +1681,7 @@ main(int argc, char *argv[])
 		}
 	}
 
+	xsetpid(); /* correct pid is the one after detaching */
 	run();
 	cleanup();
 	XCloseDisplay(dpy);
